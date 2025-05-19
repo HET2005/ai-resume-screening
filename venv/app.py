@@ -9,11 +9,12 @@ st.set_page_config(page_title="AI Resume Screening", page_icon="📄", layout="w
 st.title("Welcome to the AI Resume Screening System")
 st.markdown("Use the sidebar to navigate between pages.")
 
-# Ensure the model is downloaded on app start
-spacy.cli.download("en_core_web_sm")
-
-# Now load the model
-nlp = spacy.load("en_core_web_sm")
+# Load spacy model with check for missing model
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    spacy.cli.download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 st.title("🔍 AI Resume Screening System")
 
@@ -42,6 +43,6 @@ if st.button("Match Resumes") and uploaded_files and job_desc:
     for name, score in ranked:
         st.write(f"**{name}** — Similarity: `{score:.4f}`")
 
-# You may want to remove or relocate this part if not needed here
-from docx import Document
-doc = Document("data/resumes/AjayKumar.docx")
+# Remove this last docx loading line — it looks like leftover debug code, not needed:
+# from docx import Document
+# doc = Document("data/resumes/AjayKumar.docx")
