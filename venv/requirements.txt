@@ -1,14 +1,15 @@
 pandas
-numpy
-scikit-learn
 numpy==1.24.3
-spacy==3.7.2
-thinc==8.1.10
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
-streamlit
+scikit-learn
+spacy
 pdfminer.six
 python-docx
+mammoth
+streamlit
+# Optional packages: remove if not needed
 transformers
 pymongo
-mammoth
 matplotlib
+
+# SpaCy model - downloaded during deployment
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz
