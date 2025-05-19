@@ -1,7 +1,7 @@
 pandas
 numpy
 scikit-learn
-spacy
+spacy==3.7.2
 streamlit
 pdfminer.six
 python-docx
