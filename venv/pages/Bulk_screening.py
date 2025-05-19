@@ -1,92 +1,68 @@
 import streamlit as st
-import os
 import json
 from collections import Counter
 import spacy
-import pathlib
-import traceback
 from parser import extract_text_from_file
 from job_matcher import compute_similarity
 
-nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
+nlp = spacy.load("en_core_web_sm")
 
 def extract_skills(text):
     tokens = [token.text.lower() for token in nlp(text) if not token.is_stop and not token.is_punct]
     common_skills = ['python', 'java', 'sql', 'nlp', 'flask', 'api', 'tensorflow', 'keras', 'c++', 'aws']
     return [skill for skill in tokens if skill in common_skills]
 
-def load_resumes(folder_path, limit=100):
-    resume_texts = []
-    filenames = []
-
-    files = [f for f in os.listdir(folder_path) if f.lower().endswith(".docx")]
-    total = min(len(files), limit)
-    progress = st.progress(0)
-
-    for i, file in enumerate(files[:limit]):
-        path = os.path.join(folder_path, file)
-        try:
-            st.text(f"Reading: {file}")
-            text = extract_text_from_file(path)
-            if text and text.strip():
-                resume_texts.append(text)
-                filenames.append(file)
-            else:
-                st.warning(f"⚠️ {file} has no readable text.")
-        except Exception as e:
-            st.warning(f"❌ {file} skipped — {e}")
-
-        progress.progress(int((i + 1) / total * 100))
-
-    st.write(f"✅ Loaded {len(filenames)} resumes")
-    return filenames, resume_texts
-
-# -------------------------------------
+# -------------------------------
 st.set_page_config(page_title="Bulk Screening", layout="wide")
 st.title("📁 Bulk Resume Screening")
 
+uploaded_files = st.file_uploader("Upload Resumes (PDF or DOCX)", type=["pdf", "docx"], accept_multiple_files=True)
 job_desc = st.text_area("📝 Paste Job Description", height=200)
 
-folder_path = pathlib.Path(__file__).parent / "data" / "Resumes"
-if not folder_path.exists():
-    st.error(f"Folder not found: {folder_path}")
-    st.stop()
-
-if st.button("🚀 Start Screening") and job_desc.strip():
+if st.button("🚀 Start Screening") and job_desc.strip() and uploaded_files:
     st.info("🔄 Started resume processing...")
 
-    try:
-        filenames, resume_texts = load_resumes(str(folder_path), limit=100)
+    resume_texts = []
+    filenames = []
 
-        if not filenames:
-            st.error("❌ No valid resumes found.")
-        else:
-            st.text("👉 Calculating similarity...")
-            scores = compute_similarity(resume_texts, job_desc)
+    for file in uploaded_files:
+        try:
+            st.text(f"Reading: {file.name}")
+            # file is a BytesIO, pass it directly to your extract_text_from_file func
+            text = extract_text_from_file(file)
+            if text and text.strip():
+                resume_texts.append(text)
+                filenames.append(file.name)
+            else:
+                st.warning(f"⚠️ {file.name} has no readable text.")
+        except Exception as e:
+            st.warning(f"❌ {file.name} skipped — {e}")
 
-            st.text("✅ Similarity calculated")
+    if not filenames:
+        st.error("❌ No valid resumes found.")
+    else:
+        st.text("👉 Calculating similarity...")
+        scores = compute_similarity(resume_texts, job_desc)
 
-            ranked = sorted(zip(filenames, scores), key=lambda x: x[1], reverse=True)
+        st.text("✅ Similarity calculated")
 
-            st.text("👉 Extracting skills...")
-            all_skills = []
-            for text in resume_texts:
-                all_skills.extend(extract_skills(text))
+        ranked = sorted(zip(filenames, scores), key=lambda x: x[1], reverse=True)
 
-            skill_counts = dict(Counter(all_skills))
+        st.text("👉 Extracting skills...")
+        all_skills = []
+        for text in resume_texts:
+            all_skills.extend(extract_skills(text))
 
-            st.text("👉 Saving results.json...")
-            with open("results.json", "w") as f:
-                json.dump({
-                    "ranked": ranked[:20],
-                    "skills": skill_counts
-                }, f)
+        skill_counts = dict(Counter(all_skills))
 
-            st.success(f"✅ {len(filenames)} resumes processed!")
-            st.subheader("🏆 Top 20 Matches")
-            for i, (name, score) in enumerate(ranked[:20], 1):
-                st.write(f"**{i}. {name}** — Similarity: `{score:.4f}`")
+        st.text("👉 Saving results.json...")
+        with open("results.json", "w") as f:
+            json.dump({
+                "ranked": ranked[:20],
+                "skills": skill_counts
+            }, f)
 
-    except Exception as e:
-        st.error(f"💥 Fatal error: {e}")
-        st.text(traceback.format_exc())
+        st.success(f"✅ {len(filenames)} resumes processed!")
+        st.subheader("🏆 Top 20 Matches")
+        for i, (name, score) in enumerate(ranked[:20], 1):
+            st.write(f"**{i}. {name}** — Similarity: `{score:.4f}`")
