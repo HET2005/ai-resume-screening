@@ -3,10 +3,12 @@ import os
 import json
 from collections import Counter
 import spacy
+import pathlib
+import traceback
 from parser import extract_text_from_file
 from job_matcher import compute_similarity
 
-nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
 
 def extract_skills(text):
     tokens = [token.text.lower() for token in nlp(text) if not token.is_stop and not token.is_punct]
@@ -34,7 +36,7 @@ def load_resumes(folder_path, limit=100):
         except Exception as e:
             st.warning(f"❌ {file} skipped — {e}")
 
-        progress.progress((i + 1) / total)
+        progress.progress(int((i + 1) / total * 100))
 
     st.write(f"✅ Loaded {len(filenames)} resumes")
     return filenames, resume_texts
@@ -45,11 +47,16 @@ st.title("📁 Bulk Resume Screening")
 
 job_desc = st.text_area("📝 Paste Job Description", height=200)
 
+folder_path = pathlib.Path(__file__).parent / "venv" / "data" / "Resumes"
+if not folder_path.exists():
+    st.error(f"Folder not found: {folder_path}")
+    st.stop()
+
 if st.button("🚀 Start Screening") and job_desc.strip():
     st.info("🔄 Started resume processing...")
 
     try:
-        filenames, resume_texts = load_resumes("data/Resumes", limit=100)
+        filenames, resume_texts = load_resumes(str(folder_path), limit=100)
 
         if not filenames:
             st.error("❌ No valid resumes found.")
@@ -82,3 +89,4 @@ if st.button("🚀 Start Screening") and job_desc.strip():
 
     except Exception as e:
         st.error(f"💥 Fatal error: {e}")
+        st.text(traceback.format_exc())
