@@ -3,17 +3,18 @@ import os
 from parser import extract_text_from_file
 from job_matcher import compute_similarity
 import spacy
-import spacy.cli
+import subprocess
+import sys
 
 st.set_page_config(page_title="AI Resume Screening", page_icon="📄", layout="wide")
 st.title("Welcome to the AI Resume Screening System")
 st.markdown("Use the sidebar to navigate between pages.")
 
-# Load spacy model with check for missing model
+# Download spaCy model if not already installed
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    spacy.cli.download("en_core_web_sm")
+    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
     nlp = spacy.load("en_core_web_sm")
 
 st.title("🔍 AI Resume Screening System")
@@ -43,6 +44,3 @@ if st.button("Match Resumes") and uploaded_files and job_desc:
     for name, score in ranked:
         st.write(f"**{name}** — Similarity: `{score:.4f}`")
 
-# Remove this last docx loading line — it looks like leftover debug code, not needed:
-# from docx import Document
-# doc = Document("data/resumes/AjayKumar.docx")
