@@ -1,8 +1,8 @@
 import spacy
-import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Just load it directly
 nlp = spacy.load("en_core_web_sm")
 
 def clean_text(text):

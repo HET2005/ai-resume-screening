@@ -2,14 +2,10 @@ pandas
 numpy==1.24.3
 scikit-learn
 spacy
+streamlit
 pdfminer.six
 python-docx
 mammoth
-streamlit
-# Optional packages: remove if not needed
-transformers
-pymongo
-matplotlib
 
-# SpaCy model - downloaded during deployment
+# SpaCy model gets auto-installed with this
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz
