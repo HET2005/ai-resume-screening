@@ -52,7 +52,7 @@ st.title("📁 Bulk Resume Screening")
 job_desc = st.text_area("📝 Paste Job Description", height=200)
 
 # <-- SET YOUR ACTUAL RESUME FOLDER PATH HERE -->
-RESUME_FOLDER = "C:\Users\THORHET\OneDrive\Desktop\Agevole\resume-screening\venv\data\Resumes"
+RESUME_FOLDER = r"C:\Users\THORHET\OneDrive\Desktop\Agevole\resume-screening\venv\data\Resumes"
 
 if st.button("🚀 Start Screening") and job_desc.strip():
     st.info("🔄 Started resume processing...")
