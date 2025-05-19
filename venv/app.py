@@ -10,14 +10,11 @@ uploaded_files = st.file_uploader("Upload Resumes", type=["pdf", "docx"], accept
 job_desc = st.text_area("Paste the Job Description")
 
 if st.button("Match Resumes") and uploaded_files and job_desc:
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
-
     resume_texts = []
     filenames = []
 
     for file in uploaded_files:
-        file_path = os.path.join("temp", file.name)
+        file_path = os.path.join("/tmp", file.name)  # ✅ /tmp used instead of temp
         with open(file_path, "wb") as f:
             f.write(file.read())
         text = extract_text_from_file(file_path)
