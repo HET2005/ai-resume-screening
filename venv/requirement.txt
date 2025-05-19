@@ -7,9 +7,5 @@ pdfminer.six
 python-docx
 transformers
 pymongo
-streamlit
-spacy
-scikit-learn
-pdfminer.six
 mammoth
 matplotlib
