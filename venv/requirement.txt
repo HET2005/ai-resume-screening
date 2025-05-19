@@ -7,5 +7,5 @@ pdfminer.six
 python-docx
 transformers
 pymongo
-mammoth
+mammoth  
 matplotlib
