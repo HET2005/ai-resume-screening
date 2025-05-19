@@ -1,16 +1,13 @@
 import spacy
-import subprocess
-import sys
+from spacy.cli import download
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import spacy
-from spacy.cli import download
 
-# Auto-download spaCy model if not present
+# Ensure model is downloaded and loaded
 try:
     nlp = spacy.load("en_core_web_sm")
 except OSError:
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_sm"])
+    download("en_core_web_sm")
     nlp = spacy.load("en_core_web_sm")
 
 def clean_text(text):
