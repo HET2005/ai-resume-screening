@@ -3,11 +3,7 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-MODEL_NAME = "en_core_web_sm"
-MODEL_DIR = os.path.join(os.path.expanduser("~"), f".{MODEL_NAME}")
-
-# Load spaCy model from the guaranteed existing local path
-nlp = spacy.load(MODEL_DIR)
+nlp = spacy.load("en_core_web_sm")
 
 def clean_text(text):
     if not text:
