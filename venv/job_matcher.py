@@ -2,6 +2,8 @@ import spacy
 from spacy.cli import download
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import os
+os.environ["CUPY_DISABLE"] = "1"  # Disable CuPy GPU ops (if cuPy causing issues)
 
 # Ensure model is downloaded and loaded
 try:
