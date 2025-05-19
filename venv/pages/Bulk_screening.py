@@ -47,7 +47,7 @@ st.title("📁 Bulk Resume Screening")
 
 job_desc = st.text_area("📝 Paste Job Description", height=200)
 
-folder_path = pathlib.Path(__file__).parent / "venv" / "data" / "Resumes"
+folder_path = pathlib.Path(__file__).parent / "data" / "Resumes"
 if not folder_path.exists():
     st.error(f"Folder not found: {folder_path}")
     st.stop()
