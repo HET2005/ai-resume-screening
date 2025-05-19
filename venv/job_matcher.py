@@ -1,16 +1,29 @@
 import spacy
-from spacy.cli import download
+import os
+import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import os
-os.environ["CUPY_DISABLE"] = "1"  # Disable CuPy GPU ops (if cuPy causing issues)
 
-# Ensure model is downloaded and loaded
+MODEL_NAME = "en_core_web_sm"
+MODEL_PATH = os.path.join(os.path.expanduser("~"), MODEL_NAME)
+
+def download_spacy_model():
+    try:
+        # Use subprocess to download the model to user directory
+        subprocess.run(
+            ["python3", "-m", "spacy", "download", MODEL_NAME, "-d", MODEL_PATH], 
+            check=True
+        )
+    except Exception as e:
+        print(f"Failed to download spaCy model: {e}")
+        raise
+
+# Try loading the model from local path, else download and then load
 try:
-    nlp = spacy.load("en_core_web_sm")
+    nlp = spacy.load(MODEL_PATH)
 except OSError:
-    download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+    download_spacy_model()
+    nlp = spacy.load(MODEL_PATH)
 
 def clean_text(text):
     if not text:
