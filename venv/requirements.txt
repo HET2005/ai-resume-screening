@@ -2,6 +2,8 @@ pandas
 numpy
 scikit-learn
 spacy==3.7.2
+thinc==8.1.12
+numpy==1.25.2
 streamlit
 pdfminer.six
 python-docx
