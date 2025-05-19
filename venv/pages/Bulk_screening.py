@@ -49,7 +49,7 @@ if st.button("🚀 Start Screening") and job_desc.strip():
     st.info("🔄 Started resume processing...")
 
     try:
-        filenames, resume_texts = load_resumes("Resumes", limit=100)
+        filenames, resume_texts = load_resumes("resume-screening/venv/data/Resumes", limit=100)
 
         if not filenames:
             st.error("❌ No valid resumes found.")
