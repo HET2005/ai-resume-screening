@@ -1,0 +1,28 @@
+[
+    {
+      "id": "1",
+      "title": "Data Scientist",
+      "description": "Looking for a Data Scientist with strong skills in Python, machine learning, data analysis, and natural language processing (NLP). Experience with TensorFlow or Keras is a plus."
+    },
+    {
+      "id": "2",
+      "title": "Frontend Developer",
+      "description": "Seeking a Frontend Developer experienced in React.js, JavaScript, CSS, and responsive web design. Knowledge of UI/UX principles and version control systems required."
+    },
+    {
+      "id": "3",
+      "title": "Backend Developer",
+      "description": "Hiring Backend Developer skilled in Python, Flask/Django, REST APIs, database design (SQL/NoSQL), and cloud deployment (AWS, Azure)."
+    },
+    {
+      "id": "4",
+      "title": "Machine Learning Engineer",
+      "description": "Looking for an ML Engineer with experience building scalable models, using libraries like scikit-learn, TensorFlow, and deploying ML pipelines."
+    },
+    {
+      "id": "5",
+      "title": "DevOps Engineer",
+      "description": "DevOps Engineer with expertise in CI/CD pipelines, Docker, Kubernetes, cloud platforms (AWS, GCP), and automation scripting."
+    }
+  ]
+  

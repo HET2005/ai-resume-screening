@@ -18,14 +18,26 @@ st.title("📁 Bulk Resume Screening (Upload Resumes)")
 
 job_desc = st.text_area("📝 Paste Job Description", height=200)
 
-uploaded_files = st.file_uploader("Upload Resumes (PDF or DOCX)", type=["pdf", "docx"], accept_multiple_files=True)
+# REMOVE 'type' argument to avoid Streamlit's built-in filtering error
+uploaded_files = st.file_uploader("Upload Resumes (PDF or DOCX)", accept_multiple_files=True)  # <--
+
+if uploaded_files:
+    # Now filter manually for allowed extensions
+    allowed_exts = (".pdf", ".docx")
+    filtered_files = [file for file in uploaded_files if file.name.lower().endswith(allowed_exts)]
+    unsupported_files = [file.name for file in uploaded_files if not file.name.lower().endswith(allowed_exts)]
+
+    if unsupported_files:
+        st.warning(f"Unsupported file types ignored: {', '.join(unsupported_files)}")
+else:
+    filtered_files = []
 
 if st.button("🚀 Start Screening"):
 
     if not job_desc.strip():
         st.error("Please paste the Job Description.")
-    elif not uploaded_files:
-        st.error("Please upload one or more resumes.")
+    elif not filtered_files:
+        st.error("Please upload one or more resumes with supported file extensions (.pdf, .docx).")
     else:
         st.info("🔄 Started resume processing...")
 
@@ -33,7 +45,7 @@ if st.button("🚀 Start Screening"):
         filenames = []
         progress = st.progress(0)
 
-        for i, file in enumerate(uploaded_files):
+        for i, file in enumerate(filtered_files):
             # Save uploaded file temporarily
             with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.name)[1]) as tmp_file:
                 tmp_file.write(file.read())
@@ -49,7 +61,7 @@ if st.button("🚀 Start Screening"):
             except Exception as e:
                 st.warning(f"❌ {file.name} skipped — {e}")
 
-            progress.progress((i + 1) / len(uploaded_files))
+            progress.progress((i + 1) / len(filtered_files))
 
             # Delete temp file after processing
             os.unlink(tmp_path)
@@ -84,4 +96,3 @@ if st.button("🚀 Start Screening"):
                 }, f)
 
             st.success(f"✅ {len(filenames)} resumes processed!")
-
