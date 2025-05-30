@@ -2,7 +2,7 @@ import json
 import os
 import streamlit as st
 
-JD_FILE_PATH = "jd_library.json"
+JD_FILE_PATH = os.path.join(os.path.dirname(__file__), "jd_library.json")
 
 def load_jds():
     try:
