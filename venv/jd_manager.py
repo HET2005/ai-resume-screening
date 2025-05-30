@@ -2,7 +2,6 @@ import json
 import os
 import streamlit as st
 
-# Set path relative to this file or current working directory
 JD_FILE_PATH = "jd_library.json"
 
 def load_jds():
@@ -26,7 +25,6 @@ def save_jds(data):
 
 def add_jd(title, description):
     jds = load_jds()
-    # generate new ID, max existing + 1 or "1" if empty
     max_id = max([int(jd["id"]) for jd in jds], default=0)
     new_id = str(max_id + 1)
     jds.append({"id": new_id, "title": title, "description": description})
