@@ -5,10 +5,11 @@ JD_FILE = "jd_library.json"
 
 def load_jds():
     try:
-        with open(JD_FILE, "r") as f:
+        with open("jd_library.json", "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return []
+
 
 def save_jds(jds):
     with open(JD_FILE, "w") as f:
