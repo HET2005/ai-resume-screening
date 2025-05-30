@@ -74,14 +74,32 @@ if page == "Resume Screening":
     st.subheader("📄 Job Description")
 
     selected_jd_text = ""
+
     if jd_titles:
-        selected_title = st.selectbox("Or select from saved JD Library", jd_titles)
+        # Load saved selection from session_state or select first
+        selected_title = st.session_state.get("selected_jd_title", jd_titles[0])
+
+        selected_title = st.selectbox("Or select from saved JD Library", jd_titles, index=jd_titles.index(selected_title))
         selected_jd = next(jd for jd in jds if jd["title"] == selected_title)
         selected_jd_text = selected_jd["description"]
+
+        # Save selected JD in session_state
+        st.session_state["selected_jd_title"] = selected_title
+        st.session_state.setdefault("selected_jd_desc", selected_jd_text)
+
     else:
         st.info("No saved JDs available. Please add some in the JD Library Management section.")
+        st.session_state["selected_jd_title"] = ""
+        st.session_state["selected_jd_desc"] = ""
 
-    job_desc = st.text_area("Paste or edit the Job Description", value=selected_jd_text, height=200)
+    # Use JD from session state or freshly loaded
+    job_desc = st.text_area(
+        "Paste or edit the Job Description", 
+        value=st.session_state.get("selected_jd_desc", selected_jd_text), 
+        height=200
+    )
+    # Update session state if user edits JD manually
+    st.session_state["selected_jd_desc"] = job_desc
 
     if st.button("Match Resumes"):
 
@@ -204,6 +222,7 @@ elif page == "JD Library Management":
                         if new_title.strip() and new_desc.strip():
                             update_jd(jd["id"], new_title.strip(), new_desc.strip())
                             st.success(f"Updated '{new_title}'")
+                            st.experimental_rerun()
                         else:
                             st.warning("Title and Description cannot be empty.")
                 with col2:
